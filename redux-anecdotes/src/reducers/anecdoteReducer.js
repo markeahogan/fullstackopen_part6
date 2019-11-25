@@ -19,12 +19,22 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject)
 
+export const createVote = (id) => {
+  return {type:'VOTE', id});
+};
+
+export const createNote = (note) => {
+  return {type:'CREATE_NOTE', note};
+};
+
 const reducer = (state = initialState, action) => {
   console.log('state now: ', state)
   console.log('action', action)
   switch(action.type){
     case 'VOTE':
       return state.map(x => x.id == action.id ? {...x, votes:x.votes+1} : x);
+    case 'CREATE_NOTE':
+      return state.concat(action.note).sort((x,y) => y.votes-x.votes);
   };
   return state;
 }
