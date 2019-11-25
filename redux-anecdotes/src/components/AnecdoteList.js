@@ -1,5 +1,5 @@
 import React from 'react';
-import {createVote} from './reducers/anecdoteReducer';
+import {createVote} from '../reducers/anecdoteReducer';
 
 const AnecdoteList = ({store}) => {
   const {anecdotes} = store.getState();
