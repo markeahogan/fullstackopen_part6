@@ -1,25 +1,30 @@
-import React from 'react';
-import {createVote} from './reducers/anecdoteReducer';
+import React, {useEffect} from 'react';
+import {connect} from 'react-redux';
 import AnecdoteForm from './components/AnecdoteForm';
 import AnecdoteList from './components/AnecdoteList';
 import Notification from './components/Notification';
 import Filter from './components/Filter';
+import anecdoteService from './services/anecdotes';
+import {initAnecdotes} from './reducers/anecdoteReducer';
 
-const App = (props) => {
+const App = ({initAnecdotes}) => {
 
-  const vote = (id) => {
-    console.log('vote', id);
-    props.store.dispatch(createVote(id));
-  }; 
+  useEffect(() => {
+    anecdoteService.getAll().then(anecdotes => initAnecdotes(anecdotes));
+  });
 
   return (
     <div>
-      <Notification {...props}/>
-      <AnecdoteForm {...props} />
-      <Filter {...props} />
-      <AnecdoteList {...props} />
+      <Notification />
+      <AnecdoteForm />
+      <Filter />
+      <AnecdoteList />
     </div>
   )
 }
 
-export default App;
+const mapDispatchToProps = {
+  initAnecdotes
+}
+
+export default connect(null, mapDispatchToProps)(App);
