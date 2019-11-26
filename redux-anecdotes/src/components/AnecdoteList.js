@@ -1,4 +1,5 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {createVote} from '../reducers/anecdoteReducer';
 import {setNotification, clearNotification} from '../reducers/notificationReducer';
 
@@ -35,6 +36,19 @@ const AnecdoteList = ({store}) => {
       )}
       </>
   )
+}
+
+const mapStateToProps = (state) => {
+
+  const passesFilter = (x) => {
+    const filter = store.getState().filter;
+    return !filter || x.content.includes(filter);
+  }
+    const filteredAnecdotes = state.anecdotes.filter(x => passesFilter(x));
+
+    return {
+        anecdotes:filteredAnecdotes
+    }
 }
 
 export default AnecdoteList;
