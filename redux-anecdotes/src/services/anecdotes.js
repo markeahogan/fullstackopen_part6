@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { async } from 'q';
 
 const baseUrl = 'http://localhost:3001/anecdotes'
 
@@ -10,12 +11,19 @@ const getAll = async () => {
 }
 
 const createNew = async content => {
-  const object = {content, id:getId(), votes:0}
-  const response = await axios.post(baseUrl, object)
-  return response.data
+  const object = {content, id:getId(), votes:0};
+  const response = await axios.post(baseUrl, object);
+  console.log(response, response.data);
+  return response.data;
+}
+
+const update = async object => {
+  const response = await axios.put(`${baseUrl}/${object.id}`, object, {headers:{'Content-Type': 'application/json'}});
+  return response.data;
 }
 
 export default {
   getAll,
   createNew,
+  update
 }

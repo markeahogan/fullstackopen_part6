@@ -1,31 +1,35 @@
-import anecdoteService from './services/anecdotes';
+import anecdoteService from '../services/anecdotes';
 
-export const createVote = (id) => {
-  return {type:'VOTE', id};
+export const createVote = (anecdote) => {
+  return async dispatch => {    
+    const updatedAnecdote = {...anecdote, votes:anecdote.votes+1};
+    const result = await anecdoteService.update(updatedAnecdote);
+    return dispatch({type:'UPDATE', anecdote:result});
+  }
 };
 
 export const createAnecdote = (anecdote) => {
   return async dispatch => {
     const newAnecdote = await anecdoteService.createNew(anecdote);
-    dispatch({type:'CREATE_ANECDOTE', anecdote});
+    dispatch({type:'CREATE_ANECDOTE', anecdote:newAnecdote});
   }
 };
 
-export const initAnecdotes = (anecdotes) => {
+export const initAnecdotes = () => {
   return async dispatch => {
-    const notes = await anecdoteService.getAll();
+    const anecdotes = await anecdoteService.getAll();
     dispatch({type:'INIT_ANECDOTES', anecdotes});
   }
 };
 
 const reducer = (state = [], action) => {
   switch(action.type){
-    case 'VOTE':
-      return state.map(x => x.id == action.id ? {...x, votes:x.votes+1} : x);
+    case 'UPDATE':
+      return state.map(x => x.id == action.anecdote.id ? action.anecdote : x).sort((x,y) => y.votes-x.votes);
     case 'CREATE_ANECDOTE':
       return state.concat(action.anecdote).sort((x,y) => y.votes-x.votes);
     case 'INIT_ANECDOTES':
-      return action.anecdotes;
+      return action.anecdotes.sort((x,y) => y.votes-x.votes);
   };
   return state;
 }

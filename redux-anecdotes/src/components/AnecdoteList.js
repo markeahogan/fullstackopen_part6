@@ -1,14 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {createVote} from '../reducers/anecdoteReducer';
-import {setNotification, clearNotification} from '../reducers/notificationReducer';
+import {setNotification} from '../reducers/notificationReducer';
 
-const AnecdoteList = ({anecdotes, createVote, setNotification, clearNotification}) => {
+const AnecdoteList = ({anecdotes, createVote, setNotification}) => {
 
-  const vote = ({content, id}) => {
-    createVote(id);
-    setNotification(`you voted for ${content}`);
-    setTimeout(clearNotification, 5000);
+  const vote = (anecdote) => {
+    createVote(anecdote);
+    setNotification(`you voted for ${anecdote.content}`, 5);
   }; 
 
   return (
@@ -23,7 +22,7 @@ const AnecdoteList = ({anecdotes, createVote, setNotification, clearNotification
             has {anecdote.votes}
             <button onClick={() => vote(anecdote)}>vote</button>
           </div>
-        </div>
+        </div>     
       )}
       </>
   )
@@ -32,7 +31,7 @@ const AnecdoteList = ({anecdotes, createVote, setNotification, clearNotification
 const mapStateToProps = (state) => {
     const passesFilter = (x) => {
       const filter = state.filter;
-      return !filter || x.content.includes(filter);
+      return !filter || x.content.toLowerCase().includes(filter.toLowerCase());
     }
     const filteredAnecdotes = state.anecdotes.filter(x => passesFilter(x));
 
@@ -43,8 +42,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = {
   createVote,
-  setNotification,
-  clearNotification
+  setNotification
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(AnecdoteList);
